@@ -11,7 +11,7 @@ namespace TicTacToe
         private char[,] values { get; set; }
         private char move { get; set; } = 'O';
         private int sizeOfField { get; set; }
-        private int lengthOfWinComb = 3;
+        private int lengthOfWinComb { get; set; } = 3;
 
         public Field(int sof, int lowc)
         {
@@ -19,11 +19,6 @@ namespace TicTacToe
             lengthOfWinComb = lowc;
             values = setValuesArray();
             lines = setLinesList();
-            //for (int i = 0; i < (8*(SizeOfField - 2)*(SizeOfField - 2)); i++)
-            //{
-            //    Write($"{i} ");
-            //    lines[i].Print();
-            //}
         }
 
         public bool CheckWin()
@@ -41,12 +36,6 @@ namespace TicTacToe
                 }
             }
 
-            //WriteLine();
-            //for (int i = 0; i < copyOfLines.Count; i++)
-            //{
-            //    Write($"{i} ");
-            //    copyOfLines[i].Print();
-            //}
             if (copyOfLines.Count > 0)
             {
                 bool res;
@@ -63,6 +52,11 @@ namespace TicTacToe
             return false;
         }
 
+        public bool CheckDraw(int i)
+        {
+            return (i >= sizeOfField*sizeOfField);
+        }
+
         public void ChangePlayer()
         {
             if (move == 'X')
@@ -73,6 +67,7 @@ namespace TicTacToe
             {
                 move = 'X';
             }
+            WriteLine($"\n{move}'s turn!\n");
         }
 
         public void SetValue()
@@ -223,10 +218,8 @@ namespace TicTacToe
         {
             for (int i = 0; i < copyOfLines.Count; i++)
             {
-                //Write($"\n{i} -> X:{x}, Y:{y}");
                 if (copyOfLines[i].IsPointInLine(new Point(x, y)))
                 {
-                    //Write(" - Deleted");
                     copyOfLines.RemoveAt(i);
                     i--;
                 }

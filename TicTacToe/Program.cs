@@ -6,31 +6,30 @@ namespace TicTacToe
 {
     class Program
     {
-        static int sizeOfField;
-        static int lengthOfWinComb;
+        static int sizeOfField { get; set; }
+        static int lengthOfWinComb { get; set; }
 
         static void Main(string[] args)
         {
-            //List<Line> lines = new List<Line>();
-
-            //for (int i = 0; i < 5; i++)
-            //{
-            //    lines.Add(new Line(i, i));
-            //    WriteLine($"line{i}, row: {lines[i].Row} col: {lines[i].Col}");
-            //}
-
-
             
             while (!SetParameters()) { }
             var field = new Field(sizeOfField, lengthOfWinComb);
 
+            int i = 0;
             do
             {
                 field.ChangePlayer();
                 field.PrintField();
                 field.SetValue();
-            } while (!field.CheckWin());
-            field.PrintWinner();
+                i++;
+            } while (!(field.CheckWin() || field.CheckDraw(i)));
+            if (field.CheckDraw(i))
+            {
+                WriteLine("Draw!");
+            } else
+            {
+                field.PrintWinner();
+            }
         }
 
         static public bool SetParameters()

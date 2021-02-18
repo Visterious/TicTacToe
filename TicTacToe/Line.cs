@@ -7,7 +7,7 @@ namespace TicTacToe
 {
     class Line
     {
-        public List<Point> Points;
+        public List<Point> Points { get; set; }
 
         public Line()
         {
