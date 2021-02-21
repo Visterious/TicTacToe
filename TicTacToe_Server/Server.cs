@@ -5,17 +5,20 @@ using System.Net.Sockets;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Threading;
+using System.Configuration;
 
 namespace TicTacToe_Server
 {
-    class Program
+    class Server
     {
-        static int port { get; set; } = 8005;
+        private static string address = ConfigurationManager.AppSettings["address"];
+        private static int port = int.Parse(ConfigurationManager.AppSettings["port"]);
+
         static List<Socket> connections { get; set; } = new List<Socket>();
 
         static void Main(string[] args)
         {
-            IPEndPoint ipPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), port);
+            IPEndPoint ipPoint = new IPEndPoint(IPAddress.Parse(address), port);
 
             Socket listenSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             try
@@ -54,6 +57,15 @@ namespace TicTacToe_Server
             await Task.Run(() =>
             {
                 Game game = new Game(p1, p2);
+                try
+                {
+                    p1.Send(Encoding.UTF8.GetBytes("X;O"));
+                    p2.Send(Encoding.UTF8.GetBytes("O;X"));
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
                 Thread gameThread1 = new Thread(new ThreadStart(() => game.Handler(p1)));
                 gameThread1.Start();
                 Thread gameThread2 = new Thread(new ThreadStart(() => game.Handler(p2)));

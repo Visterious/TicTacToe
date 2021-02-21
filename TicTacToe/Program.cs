@@ -1,98 +1,45 @@
-﻿using System;
-using System.Collections.Generic;
-using static System.Console;
+﻿using static System.Console;
 
 namespace TicTacToe
 {
     class Program
     {
-        static int sizeOfField { get; set; }
-        static int lengthOfWinComb { get; set; }
-
         static void Main(string[] args)
         {
-            
-            while (!SetParameters()) { }
-            var field = new Field(sizeOfField, lengthOfWinComb);
+            var field = new Field(); // creating a game field
 
             int i = 0;
-            do
+            do // game cycle
             {
-                field.ChangePlayer();
+                field.ChangePlayer(); // change of player's turn
                 field.PrintField();
-                field.SetValue();
+                if (!field.YourTurn) // if not your turn
+                {
+                    field.Receive(); // you recieve opponent move from the server
+                    if (field.CheckWin(field.OpponentMove) || field.CheckDraw(i)) // if opponent wins the game ends
+                    {
+                        field.Winner = field.OpponentMove;
+                        WriteLine("Opponent win!");
+                        break;
+                    }
+                }
+                else // if your turn
+                {
+                    field.SetValue(); // you moves
+                }
+                field.YourTurn = !field.YourTurn; // change turn
                 i++;
-            } while (!(field.CheckWin() || field.CheckDraw(i)));
-            if (field.CheckDraw(i))
+            } while (!(field.CheckWin(field.Move) || field.CheckDraw(i))); // check of your win or draw
+            if (field.CheckDraw(i)) // draw output
             {
                 WriteLine("Draw!");
-            } else
+                field.Disconnect();
+            } else // win output
             {
                 field.PrintWinner();
+                field.Disconnect();
             }
-        }
-
-        static public bool SetParameters()
-        {
-            int size;
-            WriteLine("Enter a size of field: ");
-            string text = ReadLine();
-            try
-            {
-                size = int.Parse(text);
-                if (size < 3)
-                {
-                    WriteLine("Enter a number more then 3\n");
-                    return false;
-                }
-                sizeOfField = size;
-            }
-            catch (FormatException)
-            {
-                WriteLine("Enter a number for parameter.\n");
-                return false;
-            }
-            catch (OverflowException)
-            {
-                WriteLine("Enter a less number\n");
-                return false;
-            }
-            catch (Exception e)
-            {
-                WriteLine(e);
-                return false;
-            }
-
-            int length;
-            WriteLine("Enter a length of win combination: ");
-            text = ReadLine();
-            try
-            {
-                length = int.Parse(text);
-                if (length < 3)
-                {
-                    WriteLine("Enter a number more then 3\n");
-                    return false;
-                }
-                lengthOfWinComb = length;
-            }
-            catch (FormatException)
-            {
-                WriteLine("Enter a number for parameter.\n");
-                return false;
-            }
-            catch (OverflowException)
-            {
-                WriteLine("Enter a less number\n");
-                return false;
-            }
-            catch (Exception e)
-            {
-                WriteLine(e);
-                return false;
-            }
-
-            return true;
+            ReadKey();
         }
     }
 }

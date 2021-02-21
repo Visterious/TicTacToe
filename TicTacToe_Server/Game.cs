@@ -27,33 +27,41 @@ namespace TicTacToe_Server
 
         public void Handler(Socket p)
         {
-            while (true)
+            try
             {
-                StringBuilder builder = new StringBuilder();
-                int bytes = 0;
-                byte[] data = new byte[256];
-
-                do
+                while (true)
                 {
-                    bytes = p.Receive(data);
-                    builder.Append(Encoding.UTF8.GetString(data, 0, bytes));
-                }
-                while (p.Available > 0);
 
-                Console.WriteLine(DateTime.Now.ToShortTimeString() + ": " + builder.ToString());
+                    StringBuilder builder = new StringBuilder();
+                    int bytes = 0;
+                    byte[] data = new byte[256];
 
-                if (builder.ToString() == ".")
-                {
-                    break;
-                }
-
-                foreach (Socket player in players)
-                {
-                    if (player != p)
+                    do
                     {
-                        player.Send(data);
+                        bytes = p.Receive(data);
+                        builder.Append(Encoding.UTF8.GetString(data, 0, bytes));
+                    }
+                    while (p.Available > 0);
+
+                    Console.WriteLine(DateTime.Now.ToShortTimeString() + ": " + builder.ToString());
+
+                    if (builder.ToString() == ".")
+                    {
+                        break;
+                    }
+
+                    foreach (Socket player in players)
+                    {
+                        if (player != p)
+                        {
+                            player.Send(data);
+                        }
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
             }
             Console.WriteLine($"{p.RemoteEndPoint} leave");
         }

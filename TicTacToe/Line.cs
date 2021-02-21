@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using static System.Console;
 
 namespace TicTacToe
@@ -27,9 +25,9 @@ namespace TicTacToe
             return false;
         }
 
+        // print coordinates of line points on console
         public void Print()
         {
-            //WriteLine($"[({Points[0].Row}, {Points[0].Col}), ({Points[1].Row}, {Points[1].Col}), ({Points[2].Row}, {Points[2].Col})]");
             Write("[");
             for (int i = 0; i < Points.Count; i++)
             {
